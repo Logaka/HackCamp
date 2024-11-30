@@ -1,11 +1,13 @@
 package org.example.hackcamp.controllers;
 
+import org.example.hackcamp.models.Hackathon;
 import org.example.hackcamp.models.User;
 import org.example.hackcamp.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -49,14 +51,29 @@ public class UserController {
                 System.out.println("Login successful");
                 return ResponseEntity.ok("Login successful");
             } else {
+                System.out.println("Invalid credentials");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
         } catch (Exception e) {
+            System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred during login");
         }
     }
 
 
+    @PostMapping("/hackathon/create")
+    public String createHackathon(@RequestBody Hackathon hackathon) {
+        try {
+            return userService.createHackathon(hackathon);
+        } catch (ExecutionException | InterruptedException e) {
+            return "Error creating hackathon: " + e.getMessage();
+        }
+    }
+
+    @GetMapping("/hackathons")
+    public List<Hackathon> getAllHackathons() throws ExecutionException, InterruptedException {
+        return userService.getAllHackathons();
+    }
 
     @GetMapping("/test")
     public ResponseEntity<String> testGetEndpoint(){ return ResponseEntity.ok("Test Get Endpoint is ready");}

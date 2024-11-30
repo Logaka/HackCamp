@@ -3,9 +3,11 @@ package org.example.hackcamp.service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.example.hackcamp.models.Hackathon;
 import org.example.hackcamp.models.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -63,5 +65,24 @@ public class UserService {
         return false; // Authentication failed
     }
 
+    public String createHackathon(Hackathon hackathon) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture =
+                dbFirestore.collection("hackathons").document(hackathon.getTitle()).set(hackathon);
+        System.out.println("Hackathon created successfully at: " + collectionsApiFuture.get().getUpdateTime());
+        return "Hackathon created successfully at: " + collectionsApiFuture.get().getUpdateTime();
+    }
 
+    public List<Hackathon> getAllHackathons() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection("hackathons").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        List<Hackathon> hackathons = new ArrayList<>();
+
+        for (QueryDocumentSnapshot document : documents) {
+            hackathons.add(document.toObject(Hackathon.class));
+        }
+
+        return hackathons;
+    }
 }
