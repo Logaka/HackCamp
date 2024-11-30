@@ -73,6 +73,7 @@ public class UserController {
     @GetMapping("/hackathons")
     public List<Hackathon> getAllHackathons() throws ExecutionException, InterruptedException {
         return userService.getAllHackathons();
+
     }
 
     @GetMapping("/test")
