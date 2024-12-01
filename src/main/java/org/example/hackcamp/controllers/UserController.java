@@ -1,17 +1,11 @@
 package org.example.hackcamp.controllers;
 
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
 import org.example.hackcamp.models.Hackathon;
 import org.example.hackcamp.models.User;
 import org.example.hackcamp.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -85,17 +79,4 @@ public class UserController {
     @GetMapping("/test")
     public ResponseEntity<String> testGetEndpoint(){ return ResponseEntity.ok("Test Get Endpoint is ready");}
 
-    @GetMapping("/hackathon/{id}")
-    public Hackathon getHackathonById(@PathVariable String id) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference documentReference = dbFirestore.collection("hackathons").document(id);
-        ApiFuture<DocumentSnapshot> future = documentReference.get();
-        DocumentSnapshot document = future.get();
-
-        if (document.exists()) {
-            return document.toObject(Hackathon.class); // Преобразуем документ в объект Hackathon
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon not found");
-        }
-    }
 }
