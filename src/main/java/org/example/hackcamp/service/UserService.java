@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -65,13 +66,23 @@ public class UserService {
         return false; // Authentication failed
     }
 
+
+
     public String createHackathon(Hackathon hackathon) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        // Генерируем уникальный ID
+        DocumentReference documentReference = dbFirestore.collection("hackathons").document();
+        hackathon.setId(documentReference.getId());
+
+        // Сохраняем в Firestore
         ApiFuture<WriteResult> collectionsApiFuture =
-                dbFirestore.collection("hackathons").document(hackathon.getTitle()).set(hackathon);
+                documentReference.set(hackathon);
+
         System.out.println("Hackathon created successfully at: " + collectionsApiFuture.get().getUpdateTime());
-        return "Hackathon created successfully at: " + collectionsApiFuture.get().getUpdateTime();
+        return "Hackathon created successfully with ID: " + documentReference.getId() + " at: " + collectionsApiFuture.get().getUpdateTime();
     }
+
 
     public List<Hackathon> getAllHackathons() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
@@ -85,4 +96,7 @@ public class UserService {
 
         return hackathons;
     }
+
+
+
 }

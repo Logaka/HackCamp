@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Hackathon {
+    private String id;
     private String title;
     private String location;
     private String duration;
