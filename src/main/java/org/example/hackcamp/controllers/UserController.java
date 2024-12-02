@@ -3,6 +3,7 @@ package org.example.hackcamp.controllers;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import lombok.extern.java.Log;
 import org.example.hackcamp.models.Hackathon;
 import org.example.hackcamp.models.RegistrationRequest;
 import org.example.hackcamp.models.User;
@@ -128,7 +129,6 @@ public class UserController {
             List<RegistrationRequest> registrations = new ArrayList<>();
             for (QueryDocumentSnapshot document : documents) {
                 RegistrationRequest registration = document.toObject(RegistrationRequest.class);
-                registration.setEventId(document.getId());
                 registrations.add(registration);
             }
 
